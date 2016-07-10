@@ -1,8 +1,11 @@
 package me.signatured.buildbattlereloaded.util;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.block.Biome;
 import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import net.minecraft.server.v1_8_R1.ChatSerializer;
 import net.minecraft.server.v1_8_R1.EnumTitleAction;
@@ -82,5 +85,19 @@ public class Util {
 	
 	public static String colorText(String message) {
 		return ChatColor.translateAlternateColorCodes('&', message);
+	}
+	
+	public static void clearInventory(Player player) {
+		player.getInventory().clear();
+		player.getInventory().setArmorContents(null);
+	}
+	
+	@SuppressWarnings("deprecation")
+	public static void setBlockData(Location loc, ItemStack item) {
+		loc.getBlock().setTypeIdAndData(item.getType().getId(), item.getData().getData(), true);
+	}
+	
+	public static void setBlockBiome(Location loc, Biome biome) {
+		loc.getBlock().setBiome(biome);
 	}
 }

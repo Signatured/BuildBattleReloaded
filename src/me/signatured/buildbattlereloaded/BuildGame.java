@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import lombok.Getter;
@@ -13,7 +14,6 @@ import lombok.Setter;
 import me.signatured.buildbattlereloaded.countdown.GameCountdown;
 import me.signatured.buildbattlereloaded.countdown.StartCountdown;
 import me.signatured.buildbattlereloaded.gamedata.BuildPlot;
-import me.signatured.buildbattlereloaded.gamedata.MapData;
 
 @Getter @Setter
 public class BuildGame {
@@ -23,8 +23,8 @@ public class BuildGame {
 	
 	@NonNull
 	private String name;
-	private MapData data;
 	private GameState state = GameState.BEFORE;
+	private Location lobbyLoc;
 	private int minimum = 3;
 	
 	private Set<BuildPlayer> participants = new HashSet<>();
@@ -52,13 +52,26 @@ public class BuildGame {
 	}
 	
 	public void addPlayer(Player player) {
-		BuildPlayer bp = new BuildPlayer(player);
+		BuildPlayer bp = new BuildPlayer(player, this);
 		
 		participants.add(bp);
+		bp.handleInventory();
+		bp.teleport(lobbyLoc);
 	}
 	
-	public void removePlayer(Player player) {
+	public void removePlayer(BuildPlayer player) {
+		if (!started()) {
+			participants.remove(player);
+			update();
+		} else {
+			participants.remove(player);
+			
+			if (getSize() == 1) {
+				//TODO: Delcare winner
+			}
+		}
 		
+		player.returnInventory();
 	}
 	
 	public void tell(String message) {
@@ -81,8 +94,20 @@ public class BuildGame {
 		participants.stream().forEach(p -> p.titleAndSubtitle(title, subtitle));
 	}
 	
+	public BuildPlayer getParticipant(Player player) {
+		return participants.stream().filter(p -> p.getUuid().equals(player.getUniqueId())).findAny().orElse(null);
+	}
+	
+	public BuildPlot getPlot(BuildPlayer player) {
+		return plots.stream().filter(p -> p.getPlayer().equals(player)).findAny().orElse(null);
+	}
+	
 	public boolean started() {
 		return state != GameState.BEFORE;
+	}
+	
+	public boolean joinable() {
+		return plots.size() > 0 && lobbyLoc != null;
 	}
 	
 	public int getSize() {
