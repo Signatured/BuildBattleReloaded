@@ -1,5 +1,7 @@
 package me.signatured.buildbattlereloaded.gamedata;
 
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.inventory.ItemStack;
 
@@ -16,6 +18,8 @@ public class BuildPlot {
 	private PlotBiome biome;
 	private BuildPlayer player;
 	
+	private int score;
+	
 	public BuildPlot(BuildGame game) {
 		this.game = game;
 	}
@@ -30,6 +34,20 @@ public class BuildPlot {
 	
 	public void resetPlot() {
 		//TODO
+	}
+	
+	public Location getTeleportLoc() {
+		Location loc = data.getFlyingBounds().getCenter();
+		
+		if (loc.getBlock().getType() != Material.AIR) {
+			for (int i = 0; i < 50; i++) {
+				loc = data.getFlyingBounds().getRandomLocation();
+				
+				if (loc.getBlock().getType() == Material.AIR)
+					break;
+			}
+		}
+		return loc;
 	}
 	
 	@Getter

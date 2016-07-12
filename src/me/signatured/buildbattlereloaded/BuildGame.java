@@ -1,9 +1,7 @@
 package me.signatured.buildbattlereloaded;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -11,8 +9,10 @@ import org.bukkit.entity.Player;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import me.signatured.buildbattlereloaded.countdown.CelebrateCountdown;
 import me.signatured.buildbattlereloaded.countdown.GameCountdown;
 import me.signatured.buildbattlereloaded.countdown.StartCountdown;
+import me.signatured.buildbattlereloaded.countdown.VoteCountdown;
 import me.signatured.buildbattlereloaded.gamedata.BuildPlot;
 
 @Getter @Setter
@@ -25,13 +25,16 @@ public class BuildGame {
 	private String name;
 	private GameState state = GameState.BEFORE;
 	private Location lobbyLoc;
-	private int minimum = 3;
 	
-	private Set<BuildPlayer> participants = new HashSet<>();
-	private Set<BuildPlot> plots = new HashSet<>();
+	private int min;
+	
+	private List<BuildPlayer> participants = new ArrayList<>();
+	private List<BuildPlot> plots = new ArrayList<>();
 	
 	private StartCountdown startCountdown;
 	private GameCountdown gameCountdown;
+	private VoteCountdown voteCountdown;
+	private CelebrateCountdown celebrateCountdown;
 	
 	public BuildGame(String name) {
 		this.name = name;
@@ -39,39 +42,36 @@ public class BuildGame {
 		games.add(this);
 	}
 	
-	public void start() {
-		state = GameState.DURING;
-		//TODO
-	}
-	
-	public void update() {
-		if (getSize() >= minimum && startCountdown == null)
-			start();
-		if (getSize() < minimum && startCountdown != null)
-			startCountdown.stop();
-	}
-	
-	public void addPlayer(Player player) {
+	public void add(Player player) {
 		BuildPlayer bp = new BuildPlayer(player, this);
 		
 		participants.add(bp);
 		bp.handleInventory();
 		bp.teleport(lobbyLoc);
+		
+		checkStartRequirements();
 	}
 	
-	public void removePlayer(BuildPlayer player) {
-		if (!started()) {
-			participants.remove(player);
-			update();
-		} else {
-			participants.remove(player);
-			
-			if (getSize() == 1) {
-				//TODO: Delcare winner
-			}
-		}
-		
+	public void remove(BuildPlayer player) {
 		player.returnInventory();
+		participants.remove(player);
+		
+		if (!started() && getSize() < min && startCountdown != null)
+			startCountdown.onCancel();
+		else if (started() && isDefaultWinner())
+			end();
+	}
+	
+	public void start() {
+		state = GameState.DURING;
+		//TODO
+	}
+	
+	public void end() {
+		state = GameState.AFTER;
+		BuildPlot winner = getWinner();
+		
+		teleport(winner.getTeleportLoc());
 	}
 	
 	public void tell(String message) {
@@ -94,6 +94,10 @@ public class BuildGame {
 		participants.stream().forEach(p -> p.titleAndSubtitle(title, subtitle));
 	}
 	
+	public void teleport(Location loc) {
+		participants.stream().forEach(p -> p.teleport(loc));
+	}
+	
 	public BuildPlayer getParticipant(Player player) {
 		return participants.stream().filter(p -> p.getUuid().equals(player.getUniqueId())).findAny().orElse(null);
 	}
@@ -102,8 +106,33 @@ public class BuildGame {
 		return plots.stream().filter(p -> p.getPlayer().equals(player)).findAny().orElse(null);
 	}
 	
+	public BuildPlot getWinner() {
+		BuildPlot winner = getPlot(participants.get(0));
+		for (BuildPlayer player : participants) {
+			BuildPlot plot = getPlot(player);
+			
+			if (plot.getScore() > winner.getScore())
+				winner = plot;	
+		}
+		
+		return winner;
+	}
+	
+	public void checkStartRequirements() {
+		if (getSize() >= min && startCountdown == null)
+			new StartCountdown(this, 60);
+	}
+	
+	public boolean gameSetup() {
+		return lobbyLoc != null && min >= 2 && getMax() >= 2;
+	}
+	
 	public boolean started() {
-		return state != GameState.BEFORE;
+		return state == GameState.DURING;
+	}
+	
+	public boolean isDefaultWinner() {
+		return getSize() == 1;
 	}
 	
 	public boolean joinable() {
@@ -114,7 +143,7 @@ public class BuildGame {
 		return participants.size();
 	}
 	
-	public int getMaxSize() {
+	public int getMax() {
 		return plots.size();
 	}
 	

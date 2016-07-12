@@ -2,22 +2,23 @@ package me.signatured.buildbattlereloaded.countdown;
 
 import me.signatured.buildbattlereloaded.BuildGame;
 
-public class StartCountdown extends BuildCountdown {
-	
-	public StartCountdown(BuildGame game, int timeLeft) {
+public class CelebrateCountdown extends BuildCountdown {
+
+	public CelebrateCountdown(BuildGame game, int timeLeft) {
 		super(game, timeLeft);
-		game.setStartCountdown(this);
+		game.setCelebrateCountdown(this);
 	}
 
 	@Override
 	public void onStop() {
 		onCancel();
-		getGame().start();
+		//TODO: Reset everything, give everyone stuff back
 	}
 
 	@Override
 	public void onCancel() {
 		this.cancel();
-		getGame().setStartCountdown(null);
+		getGame().setCelebrateCountdown(null);
 	}
+
 }

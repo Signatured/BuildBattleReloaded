@@ -2,22 +2,26 @@ package me.signatured.buildbattlereloaded.countdown;
 
 import me.signatured.buildbattlereloaded.BuildGame;
 
-public class StartCountdown extends BuildCountdown {
+public class VoteCountdown extends BuildCountdown {
 	
-	public StartCountdown(BuildGame game, int timeLeft) {
+	private int vote;
+
+	public VoteCountdown(BuildGame game, int vote, int timeLeft) {
 		super(game, timeLeft);
-		game.setStartCountdown(this);
+		game.setVoteCountdown(this);
 	}
 
 	@Override
 	public void onStop() {
 		onCancel();
-		getGame().start();
+		//TODO: Start next vote or end game
 	}
 
 	@Override
 	public void onCancel() {
 		this.cancel();
-		getGame().setStartCountdown(null);
+		getGame().setVoteCountdown(null);
 	}
+
+	
 }

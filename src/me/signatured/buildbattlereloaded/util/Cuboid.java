@@ -1,6 +1,7 @@
 package me.signatured.buildbattlereloaded.util;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
@@ -18,7 +19,7 @@ public class Cuboid {
 		this.corner2 = corner2;
 	}
 	
-	public ArrayList<Location> getLocations() {
+	public List<Location> getLocations() {
 		ArrayList<Location> locations = new ArrayList<>();
 		double dist = corner1.distance(corner2);
 		Location progress = corner1.clone();
@@ -30,6 +31,20 @@ public class Cuboid {
 		}
 		
 		return locations;
+	}
+	
+	public Location getRandomLocation() {
+		List<Location> locs = getLocations();
+		
+		return locs.toArray(new Location[locs.size()])[Util.RANDOM.nextInt(locs.size())];
+	}
+	
+	public Location getCenter() {
+		double x = (corner1.getX() + corner2.getX()) / 2;
+		double y = (corner1.getY() + corner2.getY()) / 2;
+		double z = (corner1.getZ() + corner2.getZ()) / 2;
+		
+		return new Location(corner1.getWorld(), x, y, z);
 	}
 	
 	public boolean contains(Location loc) {

@@ -1,5 +1,7 @@
 package me.signatured.buildbattlereloaded.util;
 
+import java.util.Random;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Biome;
@@ -13,6 +15,8 @@ import net.minecraft.server.v1_8_R1.PacketPlayOutChat;
 import net.minecraft.server.v1_8_R1.PacketPlayOutTitle;
 
 public class Util {
+	
+	public static final Random RANDOM = new Random();
 	
 	public static PacketPlayOutChat createActionBarPacket(String message) {
 		String msg = "{\"text\":\"" + message + "\"}";
