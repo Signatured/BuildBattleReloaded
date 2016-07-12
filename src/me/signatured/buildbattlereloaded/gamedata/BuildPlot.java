@@ -3,14 +3,16 @@ package me.signatured.buildbattlereloaded.gamedata;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
+import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
 import lombok.Getter;
+import lombok.Setter;
 import me.signatured.buildbattlereloaded.BuildGame;
 import me.signatured.buildbattlereloaded.BuildPlayer;
 import me.signatured.buildbattlereloaded.util.Util;
 
-@Getter
+@Getter @Setter
 public class BuildPlot {
 	
 	private BuildGame game;
@@ -33,7 +35,20 @@ public class BuildPlot {
 	}
 	
 	public void resetPlot() {
-		//TODO
+		for (Location loc : data.getFloorBounds().getLocations()) {
+			Location cloneLoc = loc.clone().add(0, 1, 0);
+			
+			while (cloneLoc.getBlockY() <= data.getFlyingBounds().getHeight()) {
+				Block block = cloneLoc.getBlock();
+				
+				if (block.getType() != Material.AIR)
+					block.setType(Material.AIR);
+				
+				cloneLoc.add(0, 1, 0);
+			}
+			
+			loc.getBlock().setType(Material.STAINED_CLAY);
+		}
 	}
 	
 	public Location getTeleportLoc() {

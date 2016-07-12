@@ -64,7 +64,14 @@ public class BuildGame {
 	
 	public void start() {
 		state = GameState.DURING;
-		//TODO
+		
+		for (int i = 0; i < participants.size(); i++) {
+			BuildPlayer player = participants.get(i);
+			BuildPlot plot = plots.get(i);
+			
+			plot.setPlayer(player);
+			player.teleport(plot.getTeleportLoc());
+		}
 	}
 	
 	public void end() {

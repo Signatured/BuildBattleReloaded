@@ -28,4 +28,9 @@ public class BuildCreator {
 	public static BuildCreator getCreator(UUID uuid) {
 		return creators.stream().filter(c -> c.getUuid().equals(uuid)).findAny().orElse(null);
 	}
+	
+	public void cancel() {
+		BuildGame.getGames().remove(game);
+		creators.remove(this);
+	}
 }

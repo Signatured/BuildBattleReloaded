@@ -58,6 +58,10 @@ public class Cuboid {
 		return true;
 	}
 	
+	public int getHeight() {
+		return Math.max(corner1.getBlockY(), corner2.getBlockY());
+	}
+	
 	private boolean isWithinCoords(double coord1, double coord2, double value) {
 		if (coord1 > coord2)
 			return (value <= coord1 && value >= coord2);
