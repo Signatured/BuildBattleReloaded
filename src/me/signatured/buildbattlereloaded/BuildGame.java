@@ -72,6 +72,8 @@ public class BuildGame {
 			plot.setPlayer(player);
 			player.teleport(plot.getTeleportLoc());
 		}
+		
+		new GameCountdown(this, 60 * 5);
 	}
 	
 	public void end() {
