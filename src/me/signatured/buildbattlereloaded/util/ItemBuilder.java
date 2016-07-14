@@ -30,6 +30,14 @@ public class ItemBuilder {
 		this.data = (byte) data;
 	}
 	
+	public static ItemBuilder of(Material material) {
+		return of(material, 0);
+	}
+	
+	public static ItemBuilder of(Material material, int data) {
+		return new ItemBuilder(material, data);
+	}
+	
 	public ItemBuilder material(Material material) {
 		this.material = material;
 		return this;

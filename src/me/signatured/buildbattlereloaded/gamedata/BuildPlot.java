@@ -2,7 +2,6 @@ package me.signatured.buildbattlereloaded.gamedata;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
@@ -10,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import me.signatured.buildbattlereloaded.BuildGame;
 import me.signatured.buildbattlereloaded.BuildPlayer;
+import me.signatured.buildbattlereloaded.gamedata.plotdata.PlotBiome;
 import me.signatured.buildbattlereloaded.util.Util;
 
 @Getter @Setter
@@ -65,23 +65,4 @@ public class BuildPlot {
 		return loc;
 	}
 	
-	@Getter
-	public enum PlotBiome {
-		
-		PLAINS(Biome.PLAINS),
-		MESA(Biome.MESA),
-		OCEAN(Biome.OCEAN),
-		DESERT(Biome.DESERT),
-		FOREST(Biome.FOREST),
-		JUNGLE(Biome.JUNGLE),
-		ICE_PLAINS(Biome.ICE_PLAINS),
-		SWAMP(Biome.SWAMPLAND),
-		SAVANNA(Biome.SAVANNA);
-		
-		private Biome biome;
-		
-		PlotBiome(Biome biome) {
-			this.biome = biome;
-		}
-	}
 }
