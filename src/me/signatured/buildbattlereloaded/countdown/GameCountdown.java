@@ -12,7 +12,7 @@ public class GameCountdown extends BuildCountdown {
 	@Override
 	public void onStop() {
 		onCancel();
-		//TODO: Start voting period
+		new VoteCountdown(getGame(), 0, 10);
 	}
 
 	@Override

@@ -12,7 +12,7 @@ public class CelebrateCountdown extends BuildCountdown {
 	@Override
 	public void onStop() {
 		onCancel();
-		//TODO: Reset everything, give everyone stuff back
+		getGame().reset();
 	}
 
 	@Override

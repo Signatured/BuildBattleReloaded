@@ -79,6 +79,7 @@ public class BuildPlot {
 	private void resetData() {
 		player = null;
 		biome = PlotBiome.PLAINS;
+		score = 0;
 		
 		for (BuildParticle particle : particles)
 			particle.cancel();

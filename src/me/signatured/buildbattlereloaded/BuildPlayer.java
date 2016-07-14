@@ -19,6 +19,7 @@ public class BuildPlayer {
 	private String name;
 	private UUID uuid;
 	private BuildGame game;
+	private BuildRating currentRating;
 	
 	private ChangeBiomeDelay biomeDelay = new ChangeBiomeDelay();
 	private ChangeFloorDelay floorDelay = new ChangeFloorDelay();
@@ -77,6 +78,8 @@ public class BuildPlayer {
 	}
 	
 	public void handleInventory() {
+		if (getPlayer() == null)
+			return;
 		inventory = getPlayer().getInventory().getContents();
 		armor = getPlayer().getInventory().getArmorContents();
 		
@@ -84,6 +87,8 @@ public class BuildPlayer {
 	}
 	
 	public void returnInventory() {
+		if (getPlayer() == null)
+			return;
 		Util.clearInventory(getPlayer());
 		
 		getPlayer().getInventory().setContents(inventory);

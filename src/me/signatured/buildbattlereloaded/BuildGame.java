@@ -2,6 +2,7 @@ package me.signatured.buildbattlereloaded;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -81,6 +82,36 @@ public class BuildGame {
 		BuildPlot winner = getWinner();
 		
 		teleport(winner.getTeleportLoc());
+		new CelebrateCountdown(this, 15);
+		sendGameInfo();
+	}
+	
+	public void reset() {
+		teleport(lobbyLoc);
+		participants.forEach(p -> p.returnInventory());
+		plots.forEach(p -> p.resetPlot());
+		
+		participants.clear();
+		state = GameState.BEFORE;
+	}
+	
+	public void startVote(int vote) {
+		if (vote > getActivePlots().size() - 1) {
+			voteCountdown = null;
+			end();
+			return;
+		}
+		
+		new VoteCountdown(this, vote, 10);
+	}
+	
+	public void sendGameInfo() {
+		participants.stream().forEach(p -> {
+			List<BuildPlot> places = getPlaces();
+			
+			for (int i = 0; i < places.size(); i++)
+				p.tell(i + ". " + places.get(i).getPlayer().getName());
+		});
 	}
 	
 	public void tell(String message) {
@@ -125,6 +156,36 @@ public class BuildGame {
 		}
 		
 		return winner;
+	}
+	
+	public List<BuildPlot> getPlaces() {
+		List<BuildPlot> plots = new ArrayList<>();
+		for (BuildPlayer player : participants) {
+			BuildPlot plot = getPlot(player);
+			
+			if (plots.isEmpty()) {
+				plots.add(plot);
+				continue;
+			}
+			
+			for (int i = 0; i < plots.size(); i++) {
+				BuildPlot otherPlot = plots.get(i);
+				
+				if (plot.getScore() > otherPlot.getScore()) {
+					plots.set(i, plot);
+					
+					if (plots.size() > 3)
+						plots.remove(4);
+					break;
+				}
+			}
+		}
+		
+		return plots;
+	}
+	
+	public List<BuildPlot> getActivePlots() {
+		return plots.stream().filter(p -> p.getPlayer() != null).collect(Collectors.toList());
 	}
 	
 	public void checkStartRequirements() {
