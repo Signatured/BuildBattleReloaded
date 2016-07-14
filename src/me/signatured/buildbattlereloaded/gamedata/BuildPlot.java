@@ -1,5 +1,8 @@
 package me.signatured.buildbattlereloaded.gamedata;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -10,6 +13,7 @@ import lombok.Setter;
 import me.signatured.buildbattlereloaded.BuildGame;
 import me.signatured.buildbattlereloaded.BuildPlayer;
 import me.signatured.buildbattlereloaded.gamedata.plotdata.PlotBiome;
+import me.signatured.buildbattlereloaded.util.BuildParticle;
 import me.signatured.buildbattlereloaded.util.Util;
 
 @Getter @Setter
@@ -19,6 +23,8 @@ public class BuildPlot {
 	private MapData data;
 	private PlotBiome biome;
 	private BuildPlayer player;
+	
+	private List<BuildParticle> particles = new ArrayList<>();
 	
 	private int score;
 	
@@ -34,7 +40,26 @@ public class BuildPlot {
 		data.getFloorBounds().getLocations().forEach(l -> Util.setBlockBiome(l, biome.getBiome()));
 	}
 	
+	public Location getTeleportLoc() {
+		Location loc = data.getFlyingBounds().getCenter();
+		
+		if (loc.getBlock().getType() != Material.AIR) {
+			for (int i = 0; i < 50; i++) {
+				loc = data.getFlyingBounds().getRandomLocation();
+				
+				if (loc.getBlock().getType() == Material.AIR)
+					break;
+			}
+		}
+		return loc;
+	}
+	
 	public void resetPlot() {
+		resetBlocks();
+		resetData();
+	}
+	
+	private void resetBlocks() {
 		for (Location loc : data.getFloorBounds().getLocations()) {
 			Location cloneLoc = loc.clone().add(0, 1, 0);
 			
@@ -51,18 +76,14 @@ public class BuildPlot {
 		}
 	}
 	
-	public Location getTeleportLoc() {
-		Location loc = data.getFlyingBounds().getCenter();
+	private void resetData() {
+		player = null;
+		biome = PlotBiome.PLAINS;
 		
-		if (loc.getBlock().getType() != Material.AIR) {
-			for (int i = 0; i < 50; i++) {
-				loc = data.getFlyingBounds().getRandomLocation();
-				
-				if (loc.getBlock().getType() == Material.AIR)
-					break;
-			}
-		}
-		return loc;
+		for (BuildParticle particle : particles)
+			particle.cancel();
+		
+		particles.clear();
 	}
 	
 }
