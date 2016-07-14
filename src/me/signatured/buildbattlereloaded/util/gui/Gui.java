@@ -40,6 +40,7 @@ public class Gui {
 	}
 	
 	public void show(Player player) {
+		updateItems();
 		player.openInventory(inv);
 	}
 	

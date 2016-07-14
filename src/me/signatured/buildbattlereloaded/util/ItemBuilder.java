@@ -38,6 +38,19 @@ public class ItemBuilder {
 		return new ItemBuilder(material, data);
 	}
 	
+	@SuppressWarnings("deprecation")
+	public static ItemBuilder of(ItemStack item) {
+		ItemBuilder builder = new ItemBuilder(item.getType(), item.getAmount(), item.getData().getData());
+		ItemMeta meta = item.getItemMeta();
+		
+		if (meta != null && meta.hasDisplayName())
+			builder.name(meta.getDisplayName());
+		if (meta != null && meta.hasLore())
+			builder.lore(meta.getLore());
+		
+		return builder;
+	}
+	
 	public ItemBuilder material(Material material) {
 		this.material = material;
 		return this;

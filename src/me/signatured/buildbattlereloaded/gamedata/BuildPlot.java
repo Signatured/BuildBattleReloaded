@@ -13,6 +13,7 @@ import lombok.Setter;
 import me.signatured.buildbattlereloaded.BuildGame;
 import me.signatured.buildbattlereloaded.BuildPlayer;
 import me.signatured.buildbattlereloaded.gamedata.plotdata.PlotBiome;
+import me.signatured.buildbattlereloaded.gamedata.plotdata.PlotTime;
 import me.signatured.buildbattlereloaded.util.BuildParticle;
 import me.signatured.buildbattlereloaded.util.Util;
 
@@ -21,7 +22,8 @@ public class BuildPlot {
 	
 	private BuildGame game;
 	private MapData data;
-	private PlotBiome biome;
+	private PlotBiome biome = PlotBiome.PLAINS;
+	private PlotTime time = PlotTime.DAY;
 	private BuildPlayer player;
 	
 	private List<BuildParticle> particles = new ArrayList<>();

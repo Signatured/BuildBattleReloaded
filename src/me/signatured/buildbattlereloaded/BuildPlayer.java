@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 import me.signatured.buildbattlereloaded.delays.ChangeBiomeDelay;
 import me.signatured.buildbattlereloaded.delays.ChangeFloorDelay;
+import me.signatured.buildbattlereloaded.delays.ChangeWeatherDelay;
 import me.signatured.buildbattlereloaded.util.Util;
 
 @Getter
@@ -21,6 +22,7 @@ public class BuildPlayer {
 	private BuildGame game;
 	private BuildRating currentRating;
 	
+	private ChangeWeatherDelay weatherDelay = new ChangeWeatherDelay();
 	private ChangeBiomeDelay biomeDelay = new ChangeBiomeDelay();
 	private ChangeFloorDelay floorDelay = new ChangeFloorDelay();
 	
