@@ -24,6 +24,7 @@ public class BiomeGui extends Gui {
 		initItems();
 	}
 	
+	@Override
 	public void show(Player player) {
 		int index = 9;
 		
